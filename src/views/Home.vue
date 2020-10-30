@@ -7,6 +7,7 @@
         label="Search"
         single-line
         hide-details
+        clearable
       ></v-text-field>
       <v-btn block class="mt3" dark color="purple lighten-1" @click="addItem()">
         New Item
@@ -146,6 +147,9 @@ export default {
     },
     addItem() {
       this.dataRow = -1;
+      this.product = "";
+      this.quantity = "";
+      this.amount = "";
       this.dialog = true;
     },
     async deleteItem(item) {
