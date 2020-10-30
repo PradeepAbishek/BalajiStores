@@ -18,6 +18,10 @@
         :items="excelData"
         class="elevation-1 mt3"
         :search="search"
+        :loading="dataRefresh"
+        loading-text="Loading... Please wait"
+        :items-per-page="excelData.length"
+        hide-default-footer
       >
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px" persistent>
@@ -87,12 +91,13 @@ export default {
     excelData: [],
     sheet: "",
     dialog: false,
+    dataRefresh: false,
     dataRow: "",
     product: "",
     quantity: "",
     amount: "",
     headers: [
-      { text: "Product", value: "Product", sortable: false },
+      { text: "Product", value: "Product", },
       { text: "Quantity", value: "Quantity", sortable: false },
       { text: "Price", value: "Amount", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
@@ -109,6 +114,7 @@ export default {
       await doc.loadInfo();
       this.sheet = doc.sheetsByIndex[0];
       this.excelData = await this.sheet.getRows();
+      this.dataRefresh = false;
     },
     editItem(item) {
       this.product = item.Product;
@@ -118,21 +124,24 @@ export default {
       this.dialog = true;
     },
     async insertItem() {
+      this.dialog = false;
+      this.dataRefresh = true;
+      this.excelData = [];
       await this.sheet.addRow({
         Product: this.product,
         Quantity: this.quantity,
         Amount: this.amount,
       });
-      this.dialog = false;
       this.getData();
     },
     async updateitem() {
+      this.search = "";
+      this.dialog = false;
+      this.dataRefresh = true;
       this.excelData[this.dataRow].Product = this.product;
       this.excelData[this.dataRow].Quantity = this.quantity;
       this.excelData[this.dataRow].Amount = this.amount;
       await this.excelData[this.dataRow].save();
-      this.search = "";
-      this.dialog = false;
       this.getData();
     },
     saveItem() {
@@ -160,6 +169,7 @@ export default {
     },
   },
   mounted() {
+    this.dataRefresh = true;
     this.getData();
   },
 };
