@@ -59,7 +59,12 @@
                       </v-btn>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-btn class="error" block @click="dialog = !dialog">
+                      <v-btn class="error" block @click="deleteItem()">
+                        Delete
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-btn class="warning" block @click="dialog = !dialog">
                         Close
                       </v-btn>
                     </v-col>
@@ -73,9 +78,6 @@
           <v-icon small class="mr-2" @click="editItem(item)" color="error">
             mdi-pencil
           </v-icon>
-          <!-- <v-icon small @click="deleteItem(item)" color="error">
-            mdi-delete
-          </v-icon> -->
         </template>
       </v-data-table>
     </v-card-text>
@@ -97,7 +99,7 @@ export default {
     quantity: "",
     amount: "",
     headers: [
-      { text: "Product", value: "Product", },
+      { text: "Product", value: "Product", sortable: false },
       { text: "Quantity", value: "Quantity", sortable: false },
       { text: "Price", value: "Amount", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
@@ -113,14 +115,20 @@ export default {
       await doc.useServiceAccountAuth(creds);
       await doc.loadInfo();
       this.sheet = doc.sheetsByIndex[0];
-      this.excelData = await this.sheet.getRows();
+      var excelData = await this.sheet.getRows();
+      var index = 0;
+      for (var i = excelData.length - 1; i >= 0; i--) {
+        excelData[i].index = index;
+        this.excelData.push(excelData[i]);
+        index++;
+      }
       this.dataRefresh = false;
     },
     editItem(item) {
       this.product = item.Product;
       this.quantity = item.Quantity;
       this.amount = item.Amount;
-      this.dataRow = item.rowNumber - 2;
+      this.dataRow = item.index;
       this.dialog = true;
     },
     async insertItem() {
@@ -138,10 +146,13 @@ export default {
       this.search = "";
       this.dialog = false;
       this.dataRefresh = true;
-      this.excelData[this.dataRow].Product = this.product;
-      this.excelData[this.dataRow].Quantity = this.quantity;
-      this.excelData[this.dataRow].Amount = this.amount;
-      await this.excelData[this.dataRow].save();
+      await this.excelData[this.dataRow].delete();
+      this.excelData = [];
+      await this.sheet.addRow({
+        Product: this.product,
+        Quantity: this.quantity,
+        Amount: this.amount,
+      });
       this.getData();
     },
     saveItem() {
@@ -161,10 +172,12 @@ export default {
       this.amount = "";
       this.dialog = true;
     },
-    async deleteItem(item) {
-      var index = item.rowNumber - 2;
-      await this.excelData[index].delete();
+    async deleteItem() {
       this.search = "";
+      this.dialog = false;
+      this.dataRefresh = true;
+      await this.excelData[this.dataRow].delete();
+      this.excelData = [];
       this.getData();
     },
   },
