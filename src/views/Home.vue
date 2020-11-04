@@ -59,13 +59,13 @@
                       </v-btn>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-btn class="error" block @click="deleteItem()">
-                        Delete
-                      </v-btn>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
                       <v-btn class="warning" block @click="dialog = !dialog">
                         Close
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" v-if="dataRow !== -1">
+                      <v-btn class="error" block @click="deleteItem()">
+                        Delete
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -123,6 +123,7 @@ export default {
         index++;
       }
       this.dataRefresh = false;
+      this.$store.commit("setTotalItemsEntered", this.excelData.length);
     },
     editItem(item) {
       this.product = item.Product;
