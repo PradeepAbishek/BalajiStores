@@ -4,7 +4,7 @@
       <h1 class="ttu">Balaji Stores</h1>
       <v-spacer></v-spacer>
       <v-btn
-        :to="getCurrentRoute === 'Home' ? 'about' : '/'"
+        :to="getCurrentRoute === 'Home' ? '/manager' : '/'"
         text
         icon
         color="red lighten-2"
