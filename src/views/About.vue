@@ -1,7 +1,9 @@
 <template>
   <div class="flex justify-center">
     <v-card-text class="w-100 w-50-m w-50-l">
-      <v-card color="red lighten-2" class="text-center white--text">Only for Managers</v-card>
+      <v-card color="red lighten-2" class="text-center white--text">
+        Only for Managers
+      </v-card>
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
@@ -42,6 +44,14 @@
                       <v-text-field
                         v-model="quantity"
                         label="Quantity"
+                        :rules="mandatoryRule"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="mrp"
+                        label="MRP"
                         :rules="mandatoryRule"
                         required
                       ></v-text-field>
@@ -99,9 +109,11 @@ export default {
     product: "",
     quantity: "",
     amount: "",
+    mrp: "",
     headers: [
       { text: "Product", value: "Product", sortable: false },
       { text: "Quantity", value: "Quantity", sortable: false },
+      { text: "MRP", value: "MRP", sortable: false },
       { text: "Price", value: "Amount", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
@@ -130,6 +142,7 @@ export default {
       this.product = item.Product;
       this.quantity = item.Quantity;
       this.amount = item.Amount;
+      this.mrp = item.MRP;
       this.dataRow = item.index;
       this.dialog = true;
     },
@@ -141,6 +154,7 @@ export default {
         Product: this.product,
         Quantity: this.quantity,
         Amount: this.amount,
+        MRP: this.mrp,
       });
       this.getData();
     },
@@ -154,6 +168,7 @@ export default {
         Product: this.product,
         Quantity: this.quantity,
         Amount: this.amount,
+        MRP: this.mrp,
       });
       this.getData();
     },
@@ -172,6 +187,7 @@ export default {
       this.product = "";
       this.quantity = "";
       this.amount = "";
+      this.mrp = "";
       this.dialog = true;
     },
     async deleteItem() {
