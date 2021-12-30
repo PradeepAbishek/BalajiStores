@@ -111,9 +111,9 @@ export default {
     amount: "",
     mrp: "",
     headers: [
+      { text: "MRP", value: "MRP", sortable: false },
       { text: "Product", value: "Product", sortable: false },
       { text: "Quantity", value: "Quantity", sortable: false },
-      { text: "MRP", value: "MRP", sortable: false },
       { text: "Price", value: "Amount", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
